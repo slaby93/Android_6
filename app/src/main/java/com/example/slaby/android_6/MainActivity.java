@@ -6,12 +6,10 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap image;
     ImageView imagePreview;
     File userImageFolder;
+    SimpleDateFormat dt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.imagePreview = (ImageView) findViewById(R.id.imagePreview);
         userImageFolder = getAlbumStorageDir(this, "Photos");
+        dt = new SimpleDateFormat("yyyyymmdd_hhmmss");
     }
 
     @Override
@@ -43,10 +43,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveImage() {
-        Date date = new Date();
-        SimpleDateFormat dt = new SimpleDateFormat("yyyyymmdd_hhmmss");
-        File imageFile = new File(userImageFolder, "image_"+dt.format(date)+".jpeg");
         try {
+            File imageFile = new File(userImageFolder, "image_" + dt.format(new Date()) + ".jpeg");
             imageFile.createNewFile();
             FileOutputStream fos = new FileOutputStream(imageFile);
             image.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         return file;
     }
 
-    public void goToGallery() {
+    public void goToGallery(View view) {
         System.out.println("GALLERY BUTTON");
     }
 }
