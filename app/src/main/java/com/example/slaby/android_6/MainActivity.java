@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,12 +43,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveImage() {
-        System.out.println("SAVE IMAGE");
-        File imageFile = new File(userImageFolder,"test.jpeg");
+        Date date = new Date();
+        SimpleDateFormat dt = new SimpleDateFormat("yyyyymmdd_hhmmss");
+        File imageFile = new File(userImageFolder, "image_"+dt.format(date)+".jpeg");
         try {
             imageFile.createNewFile();
             FileOutputStream fos = new FileOutputStream(imageFile);
             image.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            System.out.println("File saved to: " + imageFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
