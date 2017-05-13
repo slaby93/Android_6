@@ -32,9 +32,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int reqId, int resId, Intent i) {
-        image = (Bitmap) i.getExtras().get("data");
-        imagePreview.setImageBitmap(image);
-        saveImage();
+        try {
+            image = (Bitmap) i.getExtras().get("data");
+            imagePreview.setImageBitmap(image);
+            saveImage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void openSystemCamera(View view) {
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToGallery(View view) {
-        System.out.println("GALLERY BUTTON");
+        System.out.println("Going to Gallery");
+        Intent myIntent = new Intent(this, Gallery.class);
+        startActivity(myIntent);
     }
 }
