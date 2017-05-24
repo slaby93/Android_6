@@ -11,15 +11,44 @@
         android:id="@+id/gridHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/button_wrapper"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
         <GridLayout
             android:id="@+id/gridImagePreview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:columnCount="3"
+            android:padding="10dp"
             android:rowCount="3">
 
         </GridLayout>
+
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onPrev"
+            android:text="Prev" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onNext"
+            android:text="Next" />
+    </LinearLayout>
+
 </RelativeLayout>
