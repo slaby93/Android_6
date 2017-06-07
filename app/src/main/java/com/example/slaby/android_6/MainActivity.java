@@ -1,19 +1,25 @@
 package com.example.slaby.android_6;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     SimpleDateFormat dt;
     SharedPreferences prefs;
     RatingBar ratingBar;
+    File currentImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         dt = new SimpleDateFormat("yyyyymmdd_hhmmss");
         prefs = getSharedPreferences("com.example.slaby.android_6", Context.MODE_PRIVATE);
         String pathToOpen = prefs.getString("sciezka", null);
+
         this.ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -50,17 +58,63 @@ public class MainActivity extends AppCompatActivity {
         if (pathToOpen != null) {
             setImage(pathToOpen);
         }
+
     }
 
 
     public void setImage(String pathToOpen) {
         if (prefs.contains(pathToOpen)) {
-            ratingBar.setRating( prefs.getFloat(pathToOpen, (float) 0));
+            ratingBar.setRating(prefs.getFloat(pathToOpen, (float) 0));
         }
-        File tmp = new File(pathToOpen);
-        Bitmap bitmap = BitmapFactory.decodeFile(tmp.getPath());
-        imagePreview.setTag(tmp.getAbsoluteFile());
+        currentImage = new File(pathToOpen);
+        Bitmap bitmap = BitmapFactory.decodeFile(currentImage.getPath());
+        imagePreview.setTag(currentImage.getAbsoluteFile());
         imagePreview.setImageBitmap(bitmap);
+    }
+
+    public void onFileNameChange(View view) {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.changefilename);
+
+        Button close = (Button) dialog.findViewById(R.id.cancel);
+        Button ok = (Button) dialog.findViewById(R.id.ok);
+        TextView tw = (TextView) dialog.findViewById(R.id.editText);
+        tw.setText(currentImage.getName());
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("CANCEL");
+                dialog.dismiss();
+            }
+        });
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("OK");
+                TextView tw = (TextView) dialog.findViewById(R.id.editText);
+                changeFileName(tw.getText().toString());
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    public void changeFileName(String newName) {
+        File imageFile = new File(userImageFolder, newName);
+        try {
+            imageFile.createNewFile();
+            FileOutputStream fos = new FileOutputStream(imageFile);
+            Bitmap bitmap = BitmapFactory.decodeFile(currentImage.getPath());
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            System.out.println("File saved to: " + imageFile);
+            currentImage.delete();
+            currentImage = imageFile;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        System.out.println("changeFileName " + currentImage.getName() + " new name: " + newName);
     }
 
     public void onRatingClick(View view) {
